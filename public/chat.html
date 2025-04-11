@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-time Chat</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    h1 {
+      background: #4a90e2;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      text-align: center;
+    }
+
+    #messages {
+      flex: 1;
+      list-style-type: none;
+      padding: 20px;
+      margin: 0;
+      overflow-y: auto;
+    }
+
+    #messages li {
+      background: white;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    form {
+      display: flex;
+      padding: 10px;
+      background: #eee;
+      gap: 10px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #username {
+      width: 20%;
+    }
+
+    #input {
+      flex: 1;
+    }
+
+    button {
+      background: #4a90e2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #357abd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Real-time Chat</h1>
+  <ul id="messages"></ul>
+  <form id="form">
+    <input id="username" placeholder="Ismingiz" required />
+    <input id="input" autocomplete="off" placeholder="Xabar" />
+    <button type="submit">Yuborish</button>
+  </form>
+
+  <script src="chat.js"></script>
+</body>
+</html>
