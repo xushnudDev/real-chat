@@ -7,7 +7,9 @@ import path from "path";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: { origin: "*" }  
+});
 
 const startServer = async () => {
     try {
@@ -18,12 +20,13 @@ const startServer = async () => {
         app.use(express.static(path.join(__dirname, 'public')));
 
         handledSocket(io);
+
         app.get('/', (req, res) => {
             res.sendFile(path.join(__dirname, 'public', 'chat.html'));
         });
         
         const PORT = process.env.PORT || 3000;
-        server.listen(PORT, () => console.log(`🚀 Server running on port http://localhost:${PORT}`));
+        server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
     } catch (error) {
         console.error("🔥 Error connecting to the database:", error);
         process.exit(1);  
