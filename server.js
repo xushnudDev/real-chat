@@ -4,33 +4,43 @@ import { Server } from "socket.io";
 import connectDB from "./config/db.config.js";
 import handledSocket from "./sockets/chat-app.js";
 import path from "path";
+import { fileURLToPath } from "url";
+import exphbs from "express-handlebars";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: { origin: "*" }  
-});
+const io = new Server(server);
 
 const startServer = async () => {
-    try {
-        await connectDB();
+  try {
+    await connectDB();
 
-        const __dirname = path.resolve();
+    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.urlencoded({ extended: true }));
 
-        app.use(express.static(path.join(__dirname, 'public')));
+    app.engine("handlebars", exphbs.engine());
+    app.set("view engine", "handlebars");
+    app.set("views", path.join(__dirname, "views"));
 
-        handledSocket(io);
+    io.on("connection",(socket) => {
+      handledSocket(socket,io)
+    })
+    app.get("/", (req, res) => {
+        res.render("home", { title: "Chat Rooms" });
+      });
+      
 
-        app.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, 'public', 'chat.html'));
-        });
-        
-        const PORT = process.env.PORT || 3000;
-        server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-    } catch (error) {
-        console.error("🔥 Error connecting to the database:", error);
-        process.exit(1);  
-    }
+    const PORT = process.env.PORT || 3000;
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("🔥 Error connecting to the database:", error);
+    process.exit(1);
+  }
 };
 
 startServer();

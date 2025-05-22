@@ -1,32 +1,29 @@
-import message from "../models/message.js";
-const handledSocket = async (io) => {
-    io.on('connection', (socket) => {
-        console.log("🔥 A new user connected");
-        
-        socket.on('new_user',(username) => {
-            socket.username = username;
-            io.emit('user_joined', `${username} qo\'shildi`);
-        });
-        message.find().sort({ timestamp: 1 }).limit(50).then(messages => {
-            socket.emit('load_messages', messages);
-        });
-        socket.on('send_message', async (data) => {
-            if (!socket.username) {
-              console.error('Foydalanuvchi ismi aniqlanmagan!');
-              return;
-            }
-            const newMessage = new message({
-              username: socket.username,
-              message: data.message,
-              timestamp: new Date()
-            });
-            await newMessage.save();
-            io.emit('new_message', newMessage);
-          });
-          
-        socket.on('typing', (data) => {
-            socket.broadcast.emit('typing', data);
-        });
-    })
+import Message from "../models/message.js"; 
+
+export default (socket, io) => {
+  console.log(`🟢 Socket ulandi: ${socket.id}`);
+
+  socket.on("joinRoom", async ({ username, room }) => {
+    socket.join(room);
+
+    const messages = await Message.find({ room }).sort({ timestamp: 1 }).limit(50);
+    messages.forEach(msg => {
+      socket.emit("message", `${msg.username}: ${msg.message}`);
+    });
+
+    socket.to(room).emit("message", `${username} xonaga qo‘shildi`);
+  });
+
+  socket.on("chatMessage", async ({ message, username, room }) => {
+    const newMsg = new Message({ message, username, room }); // ✅
+    await newMsg.save();
+    io.to(room).emit("message", `${username}: ${message}`);
+  });
+
+  socket.on("disconnecting", () => {
+    const rooms = [...socket.rooms].filter(r => r !== socket.id);
+    rooms.forEach(room => {
+      socket.to(room).emit("message", `❌ Foydalanuvchi chiqib ketdi`);
+    });
+  });
 };
-export default handledSocket;

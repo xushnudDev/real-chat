@@ -1,0 +1,37 @@
+<h1>Real-time Chat</h1>
+
+<div id="roomSelectContainer">
+  <form id="roomForm">
+    <div class="form-container">
+      <input id="username" placeholder="Ismingiz" required />
+      <select id="roomSelect">
+        <option value="general">General</option>
+        <option value="backend">Backend</option>
+        <option value="frontend">Frontend</option>
+        <option value="design">Design</option>
+        <option value="marketing">Marketing</option>
+        <option value="other">Other</option>
+      </select>
+      <button type="submit">Kirish</button>
+    </div>
+  </form>
+</div>
+
+<div id="chatContainer" style="display: none;">
+  <div id="userJoinMessage" class="user-join-message"></div>
+
+  <div class="chat-container">
+    <div class="messages-container">
+      <ul id="messages"></ul>
+    </div>
+
+    <div id="typingIndicator" class="typing-indicator"></div>
+
+    <form id="form">
+      <div class="form-container">
+        <input id="input" autocomplete="off" placeholder="Xabar" />
+        <button type="submit">Yuborish</button>
+      </div>
+    </form>
+  </div>
+</div>
