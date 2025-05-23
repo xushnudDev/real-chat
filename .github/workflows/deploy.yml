@@ -20,9 +20,9 @@ jobs:
 
     - name: Pull latest code & restart app on server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-          cd ${{ secrets.DEPLOY_PATH }}
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd project2/real-chat
           git pull origin main
-          npm i
-          pm2 restart real-chat || pm2 start main.js --name real-chat
+          npm install
+          pm2 restart real-chat || pm2 start server.js --name real-chat
         EOF
